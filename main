@@ -1,608 +1,731 @@
-import React, { useState, useEffect } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANSAROVAR AGROSACKS</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font for the entire application -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .bg-colorful {
+            background-image: url("https://placehold.co/1920x1080/ADD8E6/000000?text=Colorful+Background");
+            background-size: cover;
+            background-position: center;
+        }
+        /* Utility for hiding pages */
+        .hidden-page {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-colorful min-h-screen flex flex-col items-center justify-center p-4">
 
-// Main App Component
-const App = () => {
-  // State to manage the current page view
-  const [currentPage, setCurrentPage] = useState('home');
-  // State to store the logged-in user's email
-  const [loggedInUser, setLoggedInUser] = useState(null);
-  // State to store registered users (email, password, name, number)
-  const [users, setUsers] = useState([]);
-  // State to store items currently in the cart
-  const [cart, setCart] = useState([]);
-  // State to store orders that are placed but not yet received
-  const [currentOrders, setCurrentOrders] = useState([]);
-  // State to store orders that have been received
-  const [pastOrders, setPastOrders] = useState([]);
-
-  // Dummy product data for the New Order page
-  const products = [
-    { id: 1, name: 'Agrosack Type A', image: 'https://placehold.co/150x150/FFD700/000000?text=Product+1', size: '100x50 cm', rate: '₹150' },
-    { id: 2, name: 'Agrosack Type B', image: 'https://placehold.co/150x150/ADFF2F/000000?text=Product+2', size: '120x60 cm', rate: '₹180' },
-    { id: 3, name: 'Agrosack Type C', image: 'https://placehold.co/150x150/87CEEB/000000?text=Product+3', size: '90x45 cm', rate: '₹120' },
-    { id: 4, name: 'Agrosack Type D', image: 'https://placehold.co/150x150/FF6347/000000?text=Product+4', size: '110x55 cm', rate: '₹165' },
-    { id: 5, name: 'Agrosack Type E', image: 'https://placehold.co/150x150/DA70D6/000000?text=Product+5', size: '130x65 cm', rate: '₹200' },
-  ];
-
-  // Function to handle adding a product to the cart with quantity
-  const addToCart = (product, quantity) => {
-    if (quantity <= 0) {
-      alert("Quantity must be at least 1.");
-      return;
-    }
-    // Check if the product already exists in the cart
-    const existingItemIndex = cart.findIndex(item => item.id === product.id);
-    if (existingItemIndex > -1) {
-      // If it exists, update the quantity
-      setCart(prevCart => {
-        const newCart = [...prevCart];
-        newCart[existingItemIndex].quantity += quantity;
-        return newCart;
-      });
-    } else {
-      // If not, add as a new item
-      setCart((prevCart) => [...prevCart, { ...product, quantity }]);
-    }
-    alert(`${quantity} of ${product.name} added to cart!`); // Using alert as per instruction, but typically a custom modal would be used.
-  };
-
-  // Function to handle placing an order
-  const placeOrder = (orderNote) => {
-    if (cart.length === 0) {
-      alert("Your cart is empty!");
-      return;
-    }
-    const newOrder = {
-      id: Date.now(), // Unique ID for the order
-      items: [...cart],
-      orderDate: new Date().toLocaleDateString(),
-      status: 'Pending',
-      note: orderNote, // Add the note to the order
-    };
-    setCurrentOrders((prevOrders) => [...prevOrders, newOrder]);
-    setCart([]); // Clear the cart after placing the order
-    alert("Order placed successfully!"); // Using alert as per instruction
-    setCurrentPage('currentOrders'); // Navigate to current orders page
-  };
-
-  // Function to handle marking an order as received
-  const markOrderReceived = (orderId) => {
-    const orderToMove = currentOrders.find(order => order.id === orderId);
-    if (orderToMove) {
-      setCurrentOrders((prevOrders) => prevOrders.filter(order => order.id !== orderId));
-      setPastOrders((prevPastOrders) => [...prevPastOrders, { ...orderToMove, status: 'Received', receivedDate: new Date().toLocaleDateString() }]);
-      alert("Order marked as received!"); // Using alert as per instruction
-    }
-  };
-
-  // Component for the Home/Landing Page
-  const HomePage = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
-    const handleLogin = (e) => {
-      e.preventDefault();
-      const user = users.find(u => u.email === email && u.password === password);
-      if (user) {
-        setLoggedInUser(user.email);
-        setCurrentPage('dashboard');
-      } else {
-        alert('Invalid email or password.'); // Using alert as per instruction
-      }
-    };
-
-    return (
-      <div
-        className="min-h-screen bg-cover bg-center flex flex-col items-center justify-center p-4"
-        style={{ backgroundImage: 'url("https://placehold.co/1920x1080/ADD8E6/000000?text=Colorful+Background")', fontFamily: 'Inter, sans-serif' }}
-      >
-        {/* Header */}
-        <header className="w-full max-w-7xl flex justify-between items-center py-4 px-6 bg-white bg-opacity-80 rounded-xl shadow-lg mb-8">
-          <nav className="flex space-x-6">
-            <button className="text-lg font-semibold text-gray-700 hover:text-blue-600 transition duration-300 rounded-md px-3 py-1">About</button>
-            <button className="text-lg font-semibold text-gray-700 hover:text-blue-600 transition duration-300 rounded-md px-3 py-1">Contact</button>
-          </nav>
-          <h1 className="text-3xl font-extrabold text-blue-800 tracking-wide">MANSAROVAR AGROSACKS</h1>
+    <!-- Home/Landing Page -->
+    <div id="homePage" class="w-full max-w-7xl flex flex-col items-center justify-center">
+        <!-- Header -->
+        <header class="w-full max-w-7xl flex justify-between items-center py-4 px-6 bg-white bg-opacity-80 rounded-xl shadow-lg mb-8">
+            <nav class="flex space-x-6">
+                <button class="text-lg font-semibold text-gray-700 hover:text-blue-600 transition duration-300 rounded-md px-3 py-1">About</button>
+                <button class="text-lg font-semibold text-gray-700 hover:text-blue-600 transition duration-300 rounded-md px-3 py-1">Contact</button>
+            </nav>
+            <h1 class="text-3xl font-extrabold text-blue-800 tracking-wide">MANSAROVAR AGROSACKS</h1>
         </header>
 
-        {/* Main Content Area */}
-        <main className="w-full max-w-7xl flex flex-col md:flex-row bg-white bg-opacity-90 rounded-xl shadow-2xl p-8 gap-8">
-          {/* Left Half - Customer Importance */}
-          <div className="flex-1 p-6 bg-blue-50 rounded-lg shadow-inner flex items-center justify-center">
-            <p className="text-2xl font-bold text-blue-700 text-center leading-relaxed">
-              "At MANSAROVAR AGROSACKS, the customer is not just a king, but the very foundation of our success. Your satisfaction is our priority."
-            </p>
-          </div>
-
-          {/* Right Half - Login Form */}
-          <div className="flex-1 p-6 bg-blue-100 rounded-lg shadow-inner">
-            <h2 className="text-3xl font-bold text-blue-800 mb-6 text-center">Customer Login</h2>
-            <form onSubmit={handleLogin} className="space-y-6">
-              <div>
-                <label className="block text-gray-700 text-lg font-medium mb-2" htmlFor="email">Email ID</label>
-                <input
-                  type="email"
-                  id="email"
-                  className="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 text-lg font-medium mb-2" htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  id="password"
-                  className="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white text-xl font-bold py-3 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
-              >
-                Login
-              </button>
-            </form>
-            <div className="mt-8 text-center">
-              <p className="text-gray-700 text-lg mb-4">Don't have an account?</p>
-              <button
-                onClick={() => setCurrentPage('register')}
-                className="bg-green-500 text-white text-xl font-bold py-3 px-8 rounded-lg shadow-md hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105"
-              >
-                Register Now
-              </button>
+        <!-- Main Content Area -->
+        <main class="w-full max-w-7xl flex flex-col md:flex-row bg-white bg-opacity-90 rounded-xl shadow-2xl p-8 gap-8">
+            <!-- Left Half - Customer Importance -->
+            <div class="flex-1 p-6 bg-blue-50 rounded-lg shadow-inner flex items-center justify-center">
+                <p class="text-2xl font-bold text-blue-700 text-center leading-relaxed">
+                    "At MANSAROVAR AGROSACKS, the customer is not just a king, but the very foundation of our success. Your satisfaction is our priority."
+                </p>
             </div>
-          </div>
+
+            <!-- Right Half - Login Form -->
+            <div class="flex-1 p-6 bg-blue-100 rounded-lg shadow-inner">
+                <h2 class="text-3xl font-bold text-blue-800 mb-6 text-center">Customer Login</h2>
+                <form id="loginForm" class="space-y-6">
+                    <div>
+                        <label class="block text-gray-700 text-lg font-medium mb-2" for="email">Email ID</label>
+                        <input
+                            type="email"
+                            id="email"
+                            class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                            placeholder="Enter your email"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-lg font-medium mb-2" for="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                            placeholder="Enter your password"
+                            required
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        class="w-full bg-blue-600 text-white text-xl font-bold py-3 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
+                    >
+                        Login
+                    </button>
+                </form>
+                <div class="mt-8 text-center">
+                    <p class="text-gray-700 text-lg mb-4">Don't have an account?</p>
+                    <button
+                        id="registerButton"
+                        class="bg-green-500 text-white text-xl font-bold py-3 px-8 rounded-lg shadow-md hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105"
+                    >
+                        Register Now
+                    </button>
+                </div>
+            </div>
         </main>
-      </div>
-    );
-  };
+    </div>
 
-  // Component for the Registration Page
-  const RegisterPage = () => {
-    const [name, setName] = useState('');
-    const [number, setNumber] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
-    const handleRegister = (e) => {
-      e.preventDefault();
-      if (users.some(u => u.email === email)) {
-        alert('Email already registered. Please use a different email or login.'); // Using alert as per instruction
-        return;
-      }
-      setUsers((prevUsers) => [...prevUsers, { name, number, email, password }]);
-      alert('Registration successful! Please login.'); // Using alert as per instruction
-      setCurrentPage('home'); // Go back to login page after registration
-    };
-
-    return (
-      <div
-        className="min-h-screen bg-cover bg-center flex flex-col items-center justify-center p-4"
-        style={{ backgroundImage: 'url("https://placehold.co/1920x1080/ADD8E6/000000?text=Colorful+Background")', fontFamily: 'Inter, sans-serif' }}
-      >
-        <header className="w-full max-w-7xl flex justify-between items-center py-4 px-6 bg-white bg-opacity-80 rounded-xl shadow-lg mb-8">
-          <nav className="flex space-x-6">
-            <button className="text-lg font-semibold text-gray-700 hover:text-blue-600 transition duration-300 rounded-md px-3 py-1">About</button>
-            <button className="text-lg font-semibold text-gray-700 hover:text-blue-600 transition duration-300 rounded-md px-3 py-1">Contact</button>
-          </nav>
-          <h1 className="text-3xl font-extrabold text-blue-800 tracking-wide">MANSAROVAR AGROSACKS</h1>
+    <!-- Registration Page -->
+    <div id="registerPage" class="hidden-page w-full max-w-7xl flex flex-col items-center justify-center">
+        <header class="w-full max-w-7xl flex justify-between items-center py-4 px-6 bg-white bg-opacity-80 rounded-xl shadow-lg mb-8">
+            <nav class="flex space-x-6">
+                <button class="text-lg font-semibold text-gray-700 hover:text-blue-600 transition duration-300 rounded-md px-3 py-1">About</button>
+                <button class="text-lg font-semibold text-gray-700 hover:text-blue-600 transition duration-300 rounded-md px-3 py-1">Contact</button>
+            </nav>
+            <h1 class="text-3xl font-extrabold text-blue-800 tracking-wide">MANSAROVAR AGROSACKS</h1>
         </header>
 
-        <main className="w-full max-w-md bg-white bg-opacity-90 rounded-xl shadow-2xl p-8">
-          <h2 className="text-3xl font-bold text-blue-800 mb-6 text-center">Register Account</h2>
-          <form onSubmit={handleRegister} className="space-y-6">
-            <div>
-              <label className="block text-gray-700 text-lg font-medium mb-2" htmlFor="reg-name">Full Name</label>
-              <input
-                type="text"
-                id="reg-name"
-                className="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-                placeholder="Enter your full name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 text-lg font-medium mb-2" htmlFor="reg-number">Phone Number</label>
-              <input
-                type="tel"
-                id="reg-number"
-                className="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-                placeholder="Enter your phone number"
-                value={number}
-                onChange={(e) => setNumber(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 text-lg font-medium mb-2" htmlFor="reg-email">Email ID</label>
-              <input
-                type="email"
-                id="reg-email"
-                className="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 text-lg font-medium mb-2" htmlFor="reg-password">Password</label>
-              <input
-                type="password"
-                id="reg-password"
-                className="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-                placeholder="Create a password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-green-600 text-white text-xl font-bold py-3 rounded-lg shadow-md hover:bg-green-700 transition duration-300 ease-in-out transform hover:scale-105"
-            >
-              Register
-            </button>
-          </form>
-          <div className="mt-8 text-center">
-            <button
-              onClick={() => setCurrentPage('home')}
-              className="text-blue-600 hover:underline text-lg font-medium"
-            >
-              Back to Login
-            </button>
-          </div>
-        </main>
-      </div>
-    );
-  };
-
-  // Component for the Dashboard Page
-  const DashboardPage = () => {
-    return (
-      <div
-        className="min-h-screen bg-cover bg-center flex flex-col items-center p-4"
-        style={{ backgroundImage: 'url("https://placehold.co/1920x1080/ADD8E6/000000?text=Colorful+Background")', fontFamily: 'Inter, sans-serif' }}
-      >
-        <header className="w-full max-w-7xl flex justify-between items-center py-4 px-6 bg-white bg-opacity-80 rounded-xl shadow-lg mb-8">
-          <h1 className="text-3xl font-extrabold text-blue-800 tracking-wide">MANSAROVAR AGROSACKS</h1>
-          <button
-            onClick={() => {
-              setLoggedInUser(null);
-              setCurrentPage('home');
-            }}
-            className="bg-red-500 text-white text-lg font-bold py-2 px-6 rounded-lg shadow-md hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105"
-          >
-            Logout
-          </button>
-        </header>
-
-        <main className="w-full max-w-4xl bg-white bg-opacity-90 rounded-xl shadow-2xl p-8 flex flex-col items-center space-y-8">
-          <h2 className="text-4xl font-bold text-blue-800 mb-6 text-center">Welcome, {loggedInUser}!</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
-            <button
-              onClick={() => setCurrentPage('newOrder')}
-              className="bg-blue-600 text-white text-2xl font-bold py-6 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
-            >
-              New Order
-            </button>
-            <button
-              onClick={() => setCurrentPage('currentOrders')}
-              className="bg-purple-600 text-white text-2xl font-bold py-6 rounded-lg shadow-lg hover:bg-purple-700 transition duration-300 ease-in-out transform hover:scale-105"
-            >
-              Current Orders
-            </button>
-            <button
-              onClick={() => setCurrentPage('pastOrders')}
-              className="bg-green-600 text-white text-2xl font-bold py-6 rounded-lg shadow-lg hover:bg-green-700 transition duration-300 ease-in-out transform hover:scale-105"
-            >
-              Past Orders
-            </button>
-          </div>
-        </main>
-      </div>
-    );
-  };
-
-  // Component for the New Order Page
-  const NewOrderPage = () => {
-    // State to manage quantity for each product
-    const [productQuantities, setProductQuantities] = useState(
-      products.reduce((acc, product) => ({ ...acc, [product.id]: 1 }), {})
-    );
-
-    // Handle quantity change for a specific product
-    const handleQuantityChange = (productId, value) => {
-      setProductQuantities(prevQuantities => ({
-        ...prevQuantities,
-        [productId]: parseInt(value) || 1 // Ensure quantity is a number and at least 1
-      }));
-    };
-
-    return (
-      <div
-        className="min-h-screen bg-cover bg-center flex flex-col items-center p-4"
-        style={{ backgroundImage: 'url("https://placehold.co/1920x1080/ADD8E6/000000?text=Colorful+Background")', fontFamily: 'Inter, sans-serif' }}
-      >
-        <header className="w-full max-w-7xl flex justify-between items-center py-4 px-6 bg-white bg-opacity-80 rounded-xl shadow-lg mb-8">
-          <h1 className="text-3xl font-extrabold text-blue-800 tracking-wide">MANSAROVAR AGROSACKS</h1>
-          <nav className="flex space-x-4">
-            <button onClick={() => setCurrentPage('dashboard')} className="text-lg font-semibold text-gray-700 hover:text-blue-600 transition duration-300 rounded-md px-3 py-1">Dashboard</button>
-            <button
-              onClick={() => {
-                setLoggedInUser(null);
-                setCurrentPage('home');
-              }}
-              className="bg-red-500 text-white text-lg font-bold py-2 px-6 rounded-lg shadow-md hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105"
-            >
-              Logout
-            </button>
-          </nav>
-        </header>
-
-        <main className="w-full max-w-4xl bg-white bg-opacity-90 rounded-xl shadow-2xl p-8">
-          <h2 className="text-3xl font-bold text-blue-800 mb-8 text-center">New Order</h2>
-          <div className="space-y-6">
-            {products.map((product) => (
-              <div key={product.id} className="flex flex-col md:flex-row items-center bg-blue-50 p-4 rounded-lg shadow-md">
-                <img src={product.image} alt={product.name} className="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6" />
-                <div className="flex-1 text-center md:text-left">
-                  <h3 className="text-xl font-bold text-blue-700">{product.name}</h3>
-                  <p className="text-gray-700 text-lg mt-2">Size: <span className="font-semibold">{product.size}</span></p>
-                  <p className="text-gray-700 text-lg">Rate: <span className="font-semibold">{product.rate}</span></p>
-                  <div className="flex items-center mt-3 justify-center md:justify-start">
-                    <label htmlFor={`quantity-${product.id}`} className="text-gray-700 text-lg font-medium mr-2">Quantity:</label>
+        <main class="w-full max-w-md bg-white bg-opacity-90 rounded-xl shadow-2xl p-8">
+            <h2 class="text-3xl font-bold text-blue-800 mb-6 text-center">Register Account</h2>
+            <form id="registerForm" class="space-y-6">
+                <div>
+                    <label class="block text-gray-700 text-lg font-medium mb-2" for="reg-name">Full Name</label>
                     <input
-                      type="number"
-                      id={`quantity-${product.id}`}
-                      min="1"
-                      value={productQuantities[product.id]}
-                      onChange={(e) => handleQuantityChange(product.id, e.target.value)}
-                      className="w-20 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg text-center"
+                        type="text"
+                        id="reg-name"
+                        class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                        placeholder="Enter your full name"
+                        required
                     />
-                  </div>
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-lg font-medium mb-2" for="reg-number">Phone Number</label>
+                    <input
+                        type="tel"
+                        id="reg-number"
+                        class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                        placeholder="Enter your phone number"
+                        required
+                    />
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-lg font-medium mb-2" for="reg-email">Email ID</label>
+                    <input
+                        type="email"
+                        id="reg-email"
+                        class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                        placeholder="Enter your email"
+                        required
+                    />
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-lg font-medium mb-2" for="reg-password">Password</label>
+                    <input
+                        type="password"
+                        id="reg-password"
+                        class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                        placeholder="Create a password"
+                        required
+                    />
                 </div>
                 <button
-                  onClick={() => addToCart(product, productQuantities[product.id])}
-                  className="mt-4 md:mt-0 bg-green-500 text-white text-lg font-bold py-2 px-6 rounded-lg shadow-md hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105"
+                    type="submit"
+                    class="w-full bg-green-600 text-white text-xl font-bold py-3 rounded-lg shadow-md hover:bg-green-700 transition duration-300 ease-in-out transform hover:scale-105"
                 >
-                  Add to Cart
+                    Register
                 </button>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 text-center">
-            <button
-              onClick={() => setCurrentPage('cart')}
-              className="bg-purple-600 text-white text-xl font-bold py-3 px-8 rounded-lg shadow-md hover:bg-purple-700 transition duration-300 ease-in-out transform hover:scale-105"
-            >
-              Go to Cart ({cart.length})
-            </button>
-          </div>
+            </form>
+            <div class="mt-8 text-center">
+                <button
+                    id="backToLoginButton"
+                    class="text-blue-600 hover:underline text-lg font-medium"
+                >
+                    Back to Login
+                </button>
+            </div>
         </main>
-      </div>
-    );
-  };
+    </div>
 
-  // Component for the Cart Page
-  const CartPage = () => {
-    const [orderNote, setOrderNote] = useState('');
-
-    const handlePlaceOrder = () => {
-      placeOrder(orderNote);
-    };
-
-    return (
-      <div
-        className="min-h-screen bg-cover bg-center flex flex-col items-center p-4"
-        style={{ backgroundImage: 'url("https://placehold.co/1920x1080/ADD8E6/000000?text=Colorful+Background")', fontFamily: 'Inter, sans-serif' }}
-      >
-        <header className="w-full max-w-7xl flex justify-between items-center py-4 px-6 bg-white bg-opacity-80 rounded-xl shadow-lg mb-8">
-          <h1 className="text-3xl font-extrabold text-blue-800 tracking-wide">MANSAROVAR AGROSACKS</h1>
-          <nav className="flex space-x-4">
-            <button onClick={() => setCurrentPage('newOrder')} className="text-lg font-semibold text-gray-700 hover:text-blue-600 transition duration-300 rounded-md px-3 py-1">Back to Products</button>
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" class="hidden-page w-full max-w-7xl flex flex-col items-center">
+        <header class="w-full max-w-7xl flex justify-between items-center py-4 px-6 bg-white bg-opacity-80 rounded-xl shadow-lg mb-8">
+            <h1 class="text-3xl font-extrabold text-blue-800 tracking-wide">MANSAROVAR AGROSACKS</h1>
             <button
-              onClick={() => {
-                setLoggedInUser(null);
-                setCurrentPage('home');
-              }}
-              className="bg-red-500 text-white text-lg font-bold py-2 px-6 rounded-lg shadow-md hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105"
+                id="logoutButton"
+                class="bg-red-500 text-white text-lg font-bold py-2 px-6 rounded-lg shadow-md hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105"
             >
-              Logout
+                Logout
             </button>
-          </nav>
         </header>
 
-        <main className="w-full max-w-4xl bg-white bg-opacity-90 rounded-xl shadow-2xl p-8">
-          <h2 className="text-3xl font-bold text-blue-800 mb-8 text-center">Your Cart</h2>
-          {cart.length === 0 ? (
-            <p className="text-center text-xl text-gray-600">Your cart is empty.</p>
-          ) : (
-            <div className="space-y-6">
-              {cart.map((item, index) => (
-                <div key={index} className="flex items-center bg-blue-50 p-4 rounded-lg shadow-md">
-                  <img src={item.image} alt={item.name} className="w-24 h-24 rounded-lg object-cover mr-6" />
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-blue-700">{item.name}</h3>
-                    <p className="text-gray-700 text-lg">Size: {item.size}</p>
-                    <p className="text-gray-700 text-lg">Rate: {item.rate}</p>
-                    <p className="text-gray-700 text-lg font-semibold">Quantity: {item.quantity}</p>
-                  </div>
-                </div>
-              ))}
-              <div className="mt-8">
-                <label className="block text-gray-700 text-lg font-medium mb-2" htmlFor="order-note">Send Note (Optional)</label>
+        <main class="w-full max-w-4xl bg-white bg-opacity-90 rounded-xl shadow-2xl p-8 flex flex-col items-center space-y-8">
+            <h2 class="text-4xl font-bold text-blue-800 mb-6 text-center">Welcome, <span id="loggedInUserDisplay"></span>!</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
+                <button
+                    id="newOrderBtn"
+                    class="bg-blue-600 text-white text-2xl font-bold py-6 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                    New Order
+                </button>
+                <button
+                    id="currentOrdersBtn"
+                    class="bg-purple-600 text-white text-2xl font-bold py-6 rounded-lg shadow-lg hover:bg-purple-700 transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                    Current Orders
+                </button>
+                <button
+                    id="pastOrdersBtn"
+                    class="bg-green-600 text-white text-2xl font-bold py-6 rounded-lg shadow-lg hover:bg-green-700 transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                    Past Orders
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- New Order Page -->
+    <div id="newOrderPage" class="hidden-page w-full max-w-7xl flex flex-col items-center">
+        <header class="w-full max-w-7xl flex justify-between items-center py-4 px-6 bg-white bg-opacity-80 rounded-xl shadow-lg mb-8">
+            <h1 class="text-3xl font-extrabold text-blue-800 tracking-wide">MANSAROVAR AGROSACKS</h1>
+            <nav class="flex space-x-4">
+                <button id="newOrderDashboardBtn" class="text-lg font-semibold text-gray-700 hover:text-blue-600 transition duration-300 rounded-md px-3 py-1">Dashboard</button>
+                <button
+                    id="newOrderLogoutBtn"
+                    class="bg-red-500 text-white text-lg font-bold py-2 px-6 rounded-lg shadow-md hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                    Logout
+                </button>
+            </nav>
+        </header>
+
+        <main class="w-full max-w-4xl bg-white bg-opacity-90 rounded-xl shadow-2xl p-8">
+            <h2 class="text-3xl font-bold text-blue-800 mb-8 text-center">New Order</h2>
+            <div id="productsList" class="space-y-6">
+                <!-- Products will be dynamically inserted here by JavaScript -->
+            </div>
+            <div class="mt-8 text-center">
+                <button
+                    id="goToCartBtn"
+                    class="bg-purple-600 text-white text-xl font-bold py-3 px-8 rounded-lg shadow-md hover:bg-purple-700 transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                    Go to Cart (<span id="cartCount">0</span>)
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Cart Page -->
+    <div id="cartPage" class="hidden-page w-full max-w-7xl flex flex-col items-center">
+        <header class="w-full max-w-7xl flex justify-between items-center py-4 px-6 bg-white bg-opacity-80 rounded-xl shadow-lg mb-8">
+            <h1 class="text-3xl font-extrabold text-blue-800 tracking-wide">MANSAROVAR AGROSACKS</h1>
+            <nav class="flex space-x-4">
+                <button id="cartBackToProductsBtn" class="text-lg font-semibold text-gray-700 hover:text-blue-600 transition duration-300 rounded-md px-3 py-1">Back to Products</button>
+                <button
+                    id="cartLogoutBtn"
+                    class="bg-red-500 text-white text-lg font-bold py-2 px-6 rounded-lg shadow-md hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                    Logout
+                </button>
+            </nav>
+        </header>
+
+        <main class="w-full max-w-4xl bg-white bg-opacity-90 rounded-xl shadow-2xl p-8">
+            <h2 class="text-3xl font-bold text-blue-800 mb-8 text-center">Your Cart</h2>
+            <div id="cartItemsList" class="space-y-6">
+                <!-- Cart items will be dynamically inserted here by JavaScript -->
+            </div>
+            <p id="emptyCartMessage" class="text-center text-xl text-gray-600 hidden">Your cart is empty.</p>
+
+            <div class="mt-8">
+                <label class="block text-gray-700 text-lg font-medium mb-2" for="order-note">Send Note (Optional)</label>
                 <textarea
                   id="order-note"
-                  className="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                  class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
                   rows="4"
                   placeholder="Add any special instructions or notes for your order..."
-                  value={orderNote}
-                  onChange={(e) => setOrderNote(e.target.value)}
                 ></textarea>
               </div>
-              <div className="mt-8 text-center">
+            <div class="mt-8 text-center">
                 <button
-                  onClick={handlePlaceOrder}
-                  className="bg-blue-600 text-white text-xl font-bold py-3 px-8 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
+                    id="placeOrderBtn"
+                    class="bg-blue-600 text-white text-xl font-bold py-3 px-8 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
                 >
-                  Place Order
+                    Place Order
                 </button>
-              </div>
             </div>
-          )}
         </main>
-      </div>
-    );
-  };
-
-  // Component for Current Orders Page
-  const CurrentOrdersPage = () => {
-    return (
-      <div
-        className="min-h-screen bg-cover bg-center flex flex-col items-center p-4"
-        style={{ backgroundImage: 'url("https://placehold.co/1920x1080/ADD8E6/000000?text=Colorful+Background")', fontFamily: 'Inter, sans-serif' }}
-      >
-        <header className="w-full max-w-7xl flex justify-between items-center py-4 px-6 bg-white bg-opacity-80 rounded-xl shadow-lg mb-8">
-          <h1 className="text-3xl font-extrabold text-blue-800 tracking-wide">MANSAROVAR AGROSACKS</h1>
-          <nav className="flex space-x-4">
-            <button onClick={() => setCurrentPage('dashboard')} className="text-lg font-semibold text-gray-700 hover:text-blue-600 transition duration-300 rounded-md px-3 py-1">Dashboard</button>
-            <button
-              onClick={() => {
-                setLoggedInUser(null);
-                setCurrentPage('home');
-              }}
-              className="bg-red-500 text-white text-lg font-bold py-2 px-6 rounded-lg shadow-md hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105"
-            >
-              Logout
-            </button>
-          </nav>
-        </header>
-
-        <main className="w-full max-w-4xl bg-white bg-opacity-90 rounded-xl shadow-2xl p-8">
-          <h2 className="text-3xl font-bold text-blue-800 mb-8 text-center">Current Orders</h2>
-          {currentOrders.length === 0 ? (
-            <p className="text-center text-xl text-gray-600">No current orders.</p>
-          ) : (
-            <div className="space-y-6">
-              {currentOrders.map((order) => (
-                <div key={order.id} className="bg-blue-50 p-4 rounded-lg shadow-md">
-                  <h3 className="text-xl font-bold text-blue-700 mb-2">Order ID: {order.id}</h3>
-                  <p className="text-gray-700 text-lg">Order Date: {order.orderDate}</p>
-                  <p className="text-gray-700 text-lg mb-2">Status: <span className="font-semibold text-orange-600">{order.status}</span></p>
-                  {order.note && <p className="text-gray-700 text-lg mb-4">Note: <span className="italic">{order.note}</span></p>}
-                  <h4 className="text-lg font-semibold text-gray-800 mb-2">Items:</h4>
-                  <ul className="list-disc list-inside ml-4">
-                    {order.items.map((item, idx) => (
-                      <li key={idx} className="text-gray-700">{item.name} (Size: {item.size}, Rate: {item.rate}, Quantity: {item.quantity})</li>
-                    ))}
-                  </ul>
-                  <button
-                    onClick={() => markOrderReceived(order.id)}
-                    className="mt-4 bg-green-500 text-white text-lg font-bold py-2 px-6 rounded-lg shadow-md hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105"
-                  >
-                    Mark as Received
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </main>
-      </div>
-    );
-  };
-
-  // Component for Past Orders Page
-  const PastOrdersPage = () => {
-    return (
-      <div
-        className="min-h-screen bg-cover bg-center flex flex-col items-center p-4"
-        style={{ backgroundImage: 'url("https://placehold.co/1920x1080/ADD8E6/000000?text=Colorful+Background")', fontFamily: 'Inter, sans-serif' }}
-      >
-        <header className="w-full max-w-7xl flex justify-between items-center py-4 px-6 bg-white bg-opacity-80 rounded-xl shadow-lg mb-8">
-          <h1 className="text-3xl font-extrabold text-blue-800 tracking-wide">MANSAROVAR AGROSACKS</h1>
-          <nav className="flex space-x-4">
-            <button onClick={() => setCurrentPage('dashboard')} className="text-lg font-semibold text-gray-700 hover:text-blue-600 transition duration-300 rounded-md px-3 py-1">Dashboard</button>
-            <button
-              onClick={() => {
-                setLoggedInUser(null);
-                setCurrentPage('home');
-              }}
-              className="bg-red-500 text-white text-lg font-bold py-2 px-6 rounded-lg shadow-md hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105"
-            >
-              Logout
-            </button>
-          </nav>
-        </header>
-
-        <main className="w-full max-w-4xl bg-white bg-opacity-90 rounded-xl shadow-2xl p-8">
-          <h2 className="text-3xl font-bold text-blue-800 mb-8 text-center">Past Orders</h2>
-          {pastOrders.length === 0 ? (
-            <p className="text-center text-xl text-gray-600">No past orders.</p>
-          ) : (
-            <div className="space-y-6">
-              {pastOrders.map((order) => (
-                <div key={order.id} className="bg-green-50 bg-opacity-80 p-4 rounded-lg shadow-md">
-                  <h3 className="text-xl font-bold text-green-800 mb-2">Order ID: {order.id}</h3>
-                  <p className="text-gray-800 text-lg">Order Date: {order.orderDate}</p>
-                  <p className="text-gray-800 text-lg">Received Date: {order.receivedDate}</p>
-                  <p className="text-gray-800 text-lg mb-2">Status: <span className="font-semibold text-green-700">{order.status}</span></p>
-                  {order.note && <p className="text-gray-800 text-lg mb-4">Note: <span className="italic">{order.note}</span></p>}
-                  <h4 className="text-lg font-semibold text-gray-800 mb-2">Items:</h4>
-                  <ul className="list-disc list-inside ml-4">
-                    {order.items.map((item, idx) => (
-                      <li key={idx} className="text-gray-800">{item.name} (Size: {item.size}, Rate: {item.rate}, Quantity: {item.quantity})</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          )}
-        </main>
-      </div>
-    );
-  };
-
-  // Render the appropriate page based on the currentPage state
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'home':
-        return <HomePage />;
-      case 'register':
-        return <RegisterPage />;
-      case 'dashboard':
-        return <DashboardPage />;
-      case 'newOrder':
-        return <NewOrderPage />;
-      case 'cart':
-        return <CartPage />;
-      case 'currentOrders':
-        return <CurrentOrdersPage />;
-      case 'pastOrders':
-        return <PastOrdersPage />;
-      default:
-        return <HomePage />;
-    }
-  };
-
-  return (
-    <div className="App">
-      {/* Tailwind CSS CDN */}
-      <script src="https://cdn.tailwindcss.com"></script>
-      {/* Font for the entire application */}
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
-      {renderPage()}
     </div>
-  );
-};
 
-export default App;
+    <!-- Current Orders Page -->
+    <div id="currentOrdersPage" class="hidden-page w-full max-w-7xl flex flex-col items-center">
+        <header class="w-full max-w-7xl flex justify-between items-center py-4 px-6 bg-white bg-opacity-80 rounded-xl shadow-lg mb-8">
+            <h1 class="text-3xl font-extrabold text-blue-800 tracking-wide">MANSAROVAR AGROSACKS</h1>
+            <nav class="flex space-x-4">
+                <button id="currentOrdersDashboardBtn" class="text-lg font-semibold text-gray-700 hover:text-blue-600 transition duration-300 rounded-md px-3 py-1">Dashboard</button>
+                <button
+                    id="currentOrdersLogoutBtn"
+                    class="bg-red-500 text-white text-lg font-bold py-2 px-6 rounded-lg shadow-md hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                    Logout
+                </button>
+            </nav>
+        </header>
+
+        <main class="w-full max-w-4xl bg-white bg-opacity-90 rounded-xl shadow-2xl p-8">
+            <h2 class="text-3xl font-bold text-blue-800 mb-8 text-center">Current Orders</h2>
+            <div id="currentOrdersList" class="space-y-6">
+                <!-- Current orders will be dynamically inserted here by JavaScript -->
+            </div>
+            <p id="noCurrentOrdersMessage" class="text-center text-xl text-gray-600 hidden">No current orders.</p>
+        </main>
+    </div>
+
+    <!-- Past Orders Page -->
+    <div id="pastOrdersPage" class="hidden-page w-full max-w-7xl flex flex-col items-center">
+        <header class="w-full max-w-7xl flex justify-between items-center py-4 px-6 bg-white bg-opacity-80 rounded-xl shadow-lg mb-8">
+            <h1 class="text-3xl font-extrabold text-blue-800 tracking-wide">MANSAROVAR AGROSACKS</h1>
+            <nav class="flex space-x-4">
+                <button id="pastOrdersDashboardBtn" class="text-lg font-semibold text-gray-700 hover:text-blue-600 transition duration-300 rounded-md px-3 py-1">Dashboard</button>
+                <button
+                    id="pastOrdersLogoutBtn"
+                    class="bg-red-500 text-white text-lg font-bold py-2 px-6 rounded-lg shadow-md hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                    Logout
+                </button>
+            </nav>
+        </header>
+
+        <main class="w-full max-w-4xl bg-white bg-opacity-90 rounded-xl shadow-2xl p-8">
+            <h2 class="text-3xl font-bold text-blue-800 mb-8 text-center">Past Orders</h2>
+            <div id="pastOrdersList" class="space-y-6">
+                <!-- Past orders will be dynamically inserted here by JavaScript -->
+            </div>
+            <p id="noPastOrdersMessage" class="text-center text-xl text-gray-600 hidden">No past orders.</p>
+        </main>
+    </div>
+
+    <script>
+        // Global state variables
+        let currentPage = 'home';
+        let loggedInUser = null;
+        let users = []; // Stores { name, number, email, password }
+        let cart = []; // Stores { id, name, image, size, rate, quantity }
+        let currentOrders = []; // Stores { id, items, orderDate, status, note }
+        let pastOrders = []; // Stores { id, items, orderDate, status, note, receivedDate }
+
+        // Dummy product data
+        const products = [
+            { id: 1, name: 'Agrosack Type A', image: 'https://placehold.co/150x150/FFD700/000000?text=Product+1', size: '100x50 cm', rate: '₹150' },
+            { id: 2, name: 'Agrosack Type B', image: 'https://placehold.co/150x150/ADFF2F/000000?text=Product+2', size: '120x60 cm', rate: '₹180' },
+            { id: 3, name: 'Agrosack Type C', image: 'https://placehold.co/150x150/87CEEB/000000?text=Product+3', size: '90x45 cm', rate: '₹120' },
+            { id: 4, name: 'Agrosack Type D', image: 'https://placehold.co/150x150/FF6347/000000?text=Product+4', size: '110x55 cm', rate: '₹165' },
+            { id: 5, name: 'Agrosack Type E', image: 'https://placehold.co/150x150/DA70D6/000000?text=Product+5', size: '130x65 cm', rate: '₹200' },
+        ];
+
+        // Function to show a specific page and hide others
+        function showPage(pageId) {
+            const pages = ['homePage', 'registerPage', 'dashboardPage', 'newOrderPage', 'cartPage', 'currentOrdersPage', 'pastOrdersPage'];
+            pages.forEach(id => {
+                const pageElement = document.getElementById(id);
+                if (pageElement) {
+                    if (id === pageId) {
+                        pageElement.classList.remove('hidden-page');
+                    } else {
+                        pageElement.classList.add('hidden-page');
+                    }
+                }
+            });
+            currentPage = pageId; // Update global current page state
+            updateUI(); // Refresh UI after page change
+        }
+
+        // Function to update dynamic UI elements (like cart count, order lists)
+        function updateUI() {
+            // Update cart count on New Order page
+            const cartCountElement = document.getElementById('cartCount');
+            if (cartCountElement) {
+                cartCountElement.textContent = cart.length;
+            }
+
+            // Update logged-in user display on Dashboard
+            const loggedInUserDisplay = document.getElementById('loggedInUserDisplay');
+            if (loggedInUserDisplay && loggedInUser) {
+                loggedInUserDisplay.textContent = loggedInUser;
+            }
+
+            // Render products on New Order page
+            if (currentPage === 'newOrderPage') {
+                renderProducts();
+            }
+
+            // Render cart items on Cart page
+            if (currentPage === 'cartPage') {
+                renderCartItems();
+            }
+
+            // Render current orders on Current Orders page
+            if (currentPage === 'currentOrdersPage') {
+                renderCurrentOrders();
+            }
+
+            // Render past orders on Past Orders page
+            if (currentPage === 'pastOrdersPage') {
+                renderPastOrders();
+            }
+        }
+
+        // --- Event Handlers ---
+
+        // Handle Login Form Submission
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const emailInput = document.getElementById('email');
+                    const passwordInput = document.getElementById('password');
+                    const email = emailInput.value;
+                    const password = passwordInput.value;
+
+                    const user = users.find(u => u.email === email && u.password === password);
+                    if (user) {
+                        loggedInUser = user.email;
+                        showPage('dashboardPage');
+                        emailInput.value = ''; // Clear form
+                        passwordInput.value = ''; // Clear form
+                    } else {
+                        alert('Invalid email or password.');
+                    }
+                });
+            }
+
+            // Handle Register Button Click (from Home page)
+            const registerButton = document.getElementById('registerButton');
+            if (registerButton) {
+                registerButton.addEventListener('click', () => showPage('registerPage'));
+            }
+
+            // Handle Registration Form Submission
+            const registerForm = document.getElementById('registerForm');
+            if (registerForm) {
+                registerForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const name = document.getElementById('reg-name').value;
+                    const number = document.getElementById('reg-number').value;
+                    const email = document.getElementById('reg-email').value;
+                    const password = document.getElementById('reg-password').value;
+
+                    if (users.some(u => u.email === email)) {
+                        alert('Email already registered. Please use a different email or login.');
+                        return;
+                    }
+                    users.push({ name, number, email, password });
+                    alert('Registration successful! Please login.');
+                    showPage('homePage');
+                    // Clear form
+                    document.getElementById('reg-name').value = '';
+                    document.getElementById('reg-number').value = '';
+                    document.getElementById('reg-email').value = '';
+                    document.getElementById('reg-password').value = '';
+                });
+            }
+
+            // Handle Back to Login Button Click (from Register page)
+            const backToLoginButton = document.getElementById('backToLoginButton');
+            if (backToLoginButton) {
+                backToLoginButton.addEventListener('click', () => showPage('homePage'));
+            }
+
+            // Handle Logout Buttons
+            const logoutButtons = ['logoutButton', 'newOrderLogoutBtn', 'cartLogoutBtn', 'currentOrdersLogoutBtn', 'pastOrdersLogoutBtn'];
+            logoutButtons.forEach(btnId => {
+                const button = document.getElementById(btnId);
+                if (button) {
+                    button.addEventListener('click', () => {
+                        loggedInUser = null;
+                        cart = []; // Clear cart on logout
+                        showPage('homePage');
+                    });
+                }
+            });
+
+            // Handle Dashboard Navigation Buttons
+            const dashboardButtons = {
+                'newOrderBtn': 'newOrderPage',
+                'currentOrdersBtn': 'currentOrdersPage',
+                'pastOrdersBtn': 'pastOrdersPage',
+                'newOrderDashboardBtn': 'dashboardPage',
+                'currentOrdersDashboardBtn': 'dashboardPage',
+                'pastOrdersDashboardBtn': 'dashboardPage'
+            };
+            for (const btnId in dashboardButtons) {
+                const button = document.getElementById(btnId);
+                if (button) {
+                    button.addEventListener('click', () => showPage(dashboardButtons[btnId]));
+                }
+            }
+
+            // Handle Go to Cart Button
+            const goToCartBtn = document.getElementById('goToCartBtn');
+            if (goToCartBtn) {
+                goToCartBtn.addEventListener('click', () => showPage('cartPage'));
+            }
+
+            // Handle Back to Products Button (from Cart page)
+            const cartBackToProductsBtn = document.getElementById('cartBackToProductsBtn');
+            if (cartBackToProductsBtn) {
+                cartBackToProductsBtn.addEventListener('click', () => showPage('newOrderPage'));
+            }
+
+            // Handle Place Order Button
+            const placeOrderBtn = document.getElementById('placeOrderBtn');
+            if (placeOrderBtn) {
+                placeOrderBtn.addEventListener('click', () => {
+                    const orderNoteInput = document.getElementById('order-note');
+                    const orderNote = orderNoteInput ? orderNoteInput.value : '';
+                    placeOrder(orderNote);
+                    if (orderNoteInput) orderNoteInput.value = ''; // Clear note after placing order
+                });
+            }
+
+            // Initial UI update
+            updateUI();
+        });
+
+        // --- Core Application Logic Functions ---
+
+        // Function to handle adding a product to the cart with quantity
+        function addToCart(product, quantity) {
+            quantity = parseInt(quantity);
+            if (isNaN(quantity) || quantity <= 0) {
+                alert("Quantity must be at least 1.");
+                return;
+            }
+
+            const existingItemIndex = cart.findIndex(item => item.id === product.id);
+            if (existingItemIndex > -1) {
+                cart[existingItemIndex].quantity += quantity;
+            } else {
+                cart.push({ ...product, quantity });
+            }
+            alert(`${quantity} of ${product.name} added to cart!`);
+            updateUI(); // Update cart count
+        }
+
+        // Function to handle placing an order
+        function placeOrder(orderNote) {
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+            const newOrder = {
+                id: Date.now(),
+                items: JSON.parse(JSON.stringify(cart)), // Deep copy cart items
+                orderDate: new Date().toLocaleDateString(),
+                status: 'Pending',
+                note: orderNote,
+            };
+            currentOrders.push(newOrder);
+            cart = []; // Clear the cart after placing the order
+            alert("Order placed successfully!");
+            showPage('currentOrdersPage'); // Navigate to current orders page
+        }
+
+        // Function to handle marking an order as received
+        function markOrderReceived(orderId) {
+            const orderIndex = currentOrders.findIndex(order => order.id === orderId);
+            if (orderIndex > -1) {
+                const orderToMove = currentOrders.splice(orderIndex, 1)[0]; // Remove and get the order
+                orderToMove.status = 'Received';
+                orderToMove.receivedDate = new Date().toLocaleDateString();
+                pastOrders.push(orderToMove);
+                alert("Order marked as received!");
+                updateUI(); // Refresh current and past orders lists
+            }
+        }
+
+        // --- Rendering Functions for Dynamic Content ---
+
+        function renderProducts() {
+            const productsList = document.getElementById('productsList');
+            if (!productsList) return;
+
+            productsList.innerHTML = ''; // Clear existing products
+            products.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'flex flex-col md:flex-row items-center bg-blue-50 p-4 rounded-lg shadow-md';
+                productDiv.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6" />
+                    <div class="flex-1 text-center md:text-left">
+                        <h3 class="text-xl font-bold text-blue-700">${product.name}</h3>
+                        <p class="text-gray-700 text-lg mt-2">Size: <span class="font-semibold">${product.size}</span></p>
+                        <p class="text-gray-700 text-lg">Rate: <span class="font-semibold">${product.rate}</span></p>
+                        <div class="flex items-center mt-3 justify-center md:justify-start">
+                            <label for="quantity-${product.id}" class="text-gray-700 text-lg font-medium mr-2">Quantity:</label>
+                            <input
+                                type="number"
+                                id="quantity-${product.id}"
+                                min="1"
+                                value="1"
+                                class="w-20 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg text-center"
+                            />
+                        </div>
+                    </div>
+                    <button
+                        data-product-id="${product.id}"
+                        class="add-to-cart-btn mt-4 md:mt-0 bg-green-500 text-white text-lg font-bold py-2 px-6 rounded-lg shadow-md hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105"
+                    >
+                        Add to Cart
+                    </button>
+                `;
+                productsList.appendChild(productDiv);
+            });
+
+            // Attach event listeners to "Add to Cart" buttons
+            productsList.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const productId = parseInt(e.target.dataset.productId);
+                    const product = products.find(p => p.id === productId);
+                    const quantityInput = document.getElementById(`quantity-${productId}`);
+                    const quantity = parseInt(quantityInput.value);
+                    if (product) {
+                        addToCart(product, quantity);
+                    }
+                });
+            });
+        }
+
+        function renderCartItems() {
+            const cartItemsList = document.getElementById('cartItemsList');
+            const emptyCartMessage = document.getElementById('emptyCartMessage');
+            if (!cartItemsList || !emptyCartMessage) return;
+
+            cartItemsList.innerHTML = ''; // Clear existing items
+            if (cart.length === 0) {
+                emptyCartMessage.classList.remove('hidden');
+                document.getElementById('placeOrderBtn').classList.add('hidden'); // Hide place order button if cart is empty
+                document.getElementById('order-note').classList.add('hidden'); // Hide note if cart is empty
+                document.querySelector('label[for="order-note"]').classList.add('hidden'); // Hide label if cart is empty
+            } else {
+                emptyCartMessage.classList.add('hidden');
+                document.getElementById('placeOrderBtn').classList.remove('hidden');
+                document.getElementById('order-note').classList.remove('hidden');
+                document.querySelector('label[for="order-note"]').classList.remove('hidden');
+
+                cart.forEach((item, index) => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'flex items-center bg-blue-50 p-4 rounded-lg shadow-md';
+                    itemDiv.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" class="w-24 h-24 rounded-lg object-cover mr-6" />
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-blue-700">${item.name}</h3>
+                            <p class="text-gray-700 text-lg">Size: ${item.size}</p>
+                            <p class="text-gray-700 text-lg">Rate: ${item.rate}</p>
+                            <p class="text-gray-700 text-lg font-semibold">Quantity: ${item.quantity}</p>
+                        </div>
+                    `;
+                    cartItemsList.appendChild(itemDiv);
+                });
+            }
+        }
+
+        function renderCurrentOrders() {
+            const currentOrdersList = document.getElementById('currentOrdersList');
+            const noCurrentOrdersMessage = document.getElementById('noCurrentOrdersMessage');
+            if (!currentOrdersList || !noCurrentOrdersMessage) return;
+
+            currentOrdersList.innerHTML = ''; // Clear existing orders
+            if (currentOrders.length === 0) {
+                noCurrentOrdersMessage.classList.remove('hidden');
+            } else {
+                noCurrentOrdersMessage.classList.add('hidden');
+                currentOrders.forEach(order => {
+                    const orderDiv = document.createElement('div');
+                    orderDiv.className = 'bg-blue-50 p-4 rounded-lg shadow-md';
+                    let itemsHtml = order.items.map(item => `
+                        <li class="text-gray-700">${item.name} (Size: ${item.size}, Rate: ${item.rate}, Quantity: ${item.quantity})</li>
+                    `).join('');
+                    orderDiv.innerHTML = `
+                        <h3 class="text-xl font-bold text-blue-700 mb-2">Order ID: ${order.id}</h3>
+                        <p class="text-gray-700 text-lg">Order Date: ${order.orderDate}</p>
+                        <p class="text-gray-700 text-lg mb-2">Status: <span class="font-semibold text-orange-600">${order.status}</span></p>
+                        ${order.note ? `<p class="text-gray-700 text-lg mb-4">Note: <span class="italic">${order.note}</span></p>` : ''}
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Items:</h4>
+                        <ul class="list-disc list-inside ml-4">
+                            ${itemsHtml}
+                        </ul>
+                        <button
+                            data-order-id="${order.id}"
+                            class="mark-received-btn mt-4 bg-green-500 text-white text-lg font-bold py-2 px-6 rounded-lg shadow-md hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105"
+                        >
+                            Mark as Received
+                        </button>
+                    `;
+                    currentOrdersList.appendChild(orderDiv);
+                });
+
+                // Attach event listeners to "Mark as Received" buttons
+                currentOrdersList.querySelectorAll('.mark-received-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const orderId = parseInt(e.target.dataset.orderId);
+                        markOrderReceived(orderId);
+                    });
+                });
+            }
+        }
+
+        function renderPastOrders() {
+            const pastOrdersList = document.getElementById('pastOrdersList');
+            const noPastOrdersMessage = document.getElementById('noPastOrdersMessage');
+            if (!pastOrdersList || !noPastOrdersMessage) return;
+
+            pastOrdersList.innerHTML = ''; // Clear existing orders
+            if (pastOrders.length === 0) {
+                noPastOrdersMessage.classList.remove('hidden');
+            } else {
+                noPastOrdersMessage.classList.add('hidden');
+                pastOrders.forEach(order => {
+                    const orderDiv = document.createElement('div');
+                    orderDiv.className = 'bg-green-50 bg-opacity-80 p-4 rounded-lg shadow-md';
+                    let itemsHtml = order.items.map(item => `
+                        <li class="text-gray-800">${item.name} (Size: ${item.size}, Rate: ${item.rate}, Quantity: ${item.quantity})</li>
+                    `).join('');
+                    orderDiv.innerHTML = `
+                        <h3 class="text-xl font-bold text-green-800 mb-2">Order ID: ${order.id}</h3>
+                        <p class="text-gray-800 text-lg">Order Date: ${order.orderDate}</p>
+                        <p class="text-gray-800 text-lg">Received Date: ${order.receivedDate}</p>
+                        <p class="text-gray-800 text-lg mb-2">Status: <span class="font-semibold text-green-700">${order.status}</span></p>
+                        ${order.note ? `<p class="text-gray-800 text-lg mb-4">Note: <span class="italic">${order.note}</span></p>` : ''}
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Items:</h4>
+                        <ul class="list-disc list-inside ml-4">
+                            ${itemsHtml}
+                        </ul>
+                    `;
+                    pastOrdersList.appendChild(orderDiv);
+                });
+            }
+        }
+
+        // Initial page load
+        window.onload = () => {
+            showPage('homePage');
+        };
+    </script>
+</body>
+</html>
