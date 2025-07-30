@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANSAROVAR AGROSACKS - Cart</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="logo">MANSAROVAR AGROSACKS</div>
+        <nav class="nav-links">
+            <a href="dashboard.html" class="nav-item">Dashboard</a>
+            <a href="new_order.html" class="nav-item">New Order</a>
+            <a href="current_orders.html" class="nav-item">Current Orders</a>
+            <a href="past_orders.html" class="nav-item">Past Orders</a>
+            <a href="#" class="nav-item" id="logoutBtn">Logout</a>
+        </nav>
+    </div>
+
+    <div class="container">
+        <h1>Your Cart</h1>
+        <div id="cart-items">
+            </div>
+        <div class="cart-summary">
+            <p>Total Items: <span id="cart-total-items">0</span></p>
+            <p>Total Price: $<span id="cart-total-price">0.00</span></p>
+        </div>
+        <button id="place-order-btn">Place Order</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
