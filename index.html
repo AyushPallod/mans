@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANSAROVAR AGROSACKS - Home</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="logo">MANSAROVAR AGROSACKS</div>
+        <nav class="nav-links">
+            <a href="#" class="nav-item">About</a>
+            <a href="#" class="nav-item">Contact</a>
+        </nav>
+    </div>
+
+    <div class="landing-content">
+        <div class="image-container">
+            <img src="placeholder_image.jpg" alt="Colorful background" class="landing-image">
+        </div>
+        <div class="main-content">
+            <div class="customer-info">
+                <h2>The Customer is Our Priority</h2>
+                <p>At MANSAROVAR AGROSACKS, we believe that our customers are the backbone of our success. We are committed to providing the highest quality products and unparalleled service to meet your needs and exceed your expectations. Your satisfaction is our ultimate goal, and we strive to build lasting relationships based on trust and mutual respect.</p>
+                <p>We understand the importance of reliable and efficient supply for your business, and we are dedicated to ensuring a seamless experience from order to delivery. Thank you for choosing MANSAROVAR AGROSACKS – where your needs come first.</p>
+            </div>
+            <div class="login-register-section">
+                <div class="login-form">
+                    <h2>Customer Login</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="loginEmail">Email:</label>
+                            <input type="email" id="loginEmail" name="loginEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password:</label>
+                            <input type="password" id="loginPassword" name="loginPassword" required>
+                        </div>
+                        <button type="submit">Login</button>
+                    </form>
+                    <p>Don't have an account? <a href="#" id="showRegister">Register here</a></p>
+                </div>
+
+                <div class="register-form" style="display: none;">
+                    <h2>Register</h2>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="registerName">Name:</label>
+                            <input type="text" id="registerName" name="registerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerNumber">Number:</label>
+                            <input type="text" id="registerNumber" name="registerNumber" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">Email:</label>
+                            <input type="email" id="registerEmail" name="registerEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Password:</label>
+                            <input type="password" id="registerPassword" name="registerPassword" required>
+                        </div>
+                        <button type="submit">Register</button>
+                    </form>
+                    <p>Already have an account? <a href="#" id="showLogin">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
