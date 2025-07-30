@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANSAROVAR AGROSACKS - New Order</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="logo">MANSAROVAR AGROSACKS</div>
+        <nav class="nav-links">
+            <a href="dashboard.html" class="nav-item">Dashboard</a>
+            <a href="new_order.html" class="nav-item">New Order</a>
+            <a href="current_orders.html" class="nav-item">Current Orders</a>
+            <a href="past_orders.html" class="nav-item">Past Orders</a>
+            <a href="#" class="nav-item" id="logoutBtn">Logout</a>
+        </nav>
+    </div>
+
+    <div class="container">
+        <h1>New Order</h1>
+        <div class="product-list">
+            <div class="product-item">
+                <img src="placeholder_image.jpg" alt="Product 1">
+                <div class="product-details">
+                    <h3>Product Name 1</h3>
+                    <p><strong>Size:</strong> 10x15 inches</p>
+                    <p><strong>Rate:</strong> $5.00 / piece</p>
+                    <input type="number" value="1" min="1" class="quantity-input">
+                    <button class="add-to-cart-btn" data-id="1" data-name="Product Name 1" data-price="5.00" data-size="10x15 inches">Add to Cart</button>
+                </div>
+            </div>
+            <div class="product-item">
+                <img src="placeholder_image.jpg" alt="Product 2">
+                <div class="product-details">
+                    <h3>Product Name 2</h3>
+                    <p><strong>Size:</strong> 12x18 inches</p>
+                    <p><strong>Rate:</strong> $6.50 / piece</p>
+                    <input type="number" value="1" min="1" class="quantity-input">
+                    <button class="add-to-cart-btn" data-id="2" data-name="Product Name 2" data-price="6.50" data-size="12x18 inches">Add to Cart</button>
+                </div>
+            </div>
+            <div class="product-item">
+                <img src="placeholder_image.jpg" alt="Product 3">
+                <div class="product-details">
+                    <h3>Product Name 3</h3>
+                    <p><strong>Size:</strong> 15x20 inches</p>
+                    <p><strong>Rate:</strong> $8.00 / piece</p>
+                    <input type="number" value="1" min="1" class="quantity-input">
+                    <button class="add-to-cart-btn" data-id="3" data-name="Product Name 3" data-price="8.00" data-size="15x20 inches">Add to Cart</button>
+                </div>
+            </div>
+            <div class="product-item">
+                <img src="placeholder_image.jpg" alt="Product 4">
+                <div class="product-details">
+                    <h3>Product Name 4</h3>
+                    <p><strong>Size:</strong> 18x24 inches</p>
+                    <p><strong>Rate:</strong> $10.00 / piece</p>
+                    <input type="number" value="1" min="1" class="quantity-input">
+                    <button class="add-to-cart-btn" data-id="4" data-name="Product Name 4" data-price="10.00" data-size="18x24 inches">Add to Cart</button>
+                </div>
+            </div>
+            <div class="product-item">
+                <img src="placeholder_image.jpg" alt="Product 5">
+                <div class="product-details">
+                    <h3>Product Name 5</h3>
+                    <p><strong>Size:</strong> 20x28 inches</p>
+                    <p><strong>Rate:</strong> $12.50 / piece</p>
+                    <input type="number" value="1" min="1" class="quantity-input">
+                    <button class="add-to-cart-btn" data-id="5" data-name="Product Name 5" data-price="12.50" data-size="20x28 inches">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+        <button class="go-to-cart-btn" onclick="location.href='cart.html'">Go to Cart</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
